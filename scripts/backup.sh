@@ -9,8 +9,8 @@ BACKUP_NAME=mysql-backup-${DATESTAMP}.sql.gz
 SRC=${LOCATION}/${BACKUP_NAME}
 DST=gs://app-o/mysql/backups/${BACKUP_NAME}
 
-#exec >> ${LOCATION}/logs/${FILENAME%.*}.log
-#exec 2>&1
+exec >> ${LOCATION}/../logs/${DATESTAMP}.log
+exec 2>&1
 
 cd ${LOCATION}
 
