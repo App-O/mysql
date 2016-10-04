@@ -21,6 +21,6 @@ echo Uploading ${SRC} to ${DST}...
 gsutil cp ${SRC} ${DST}
 
 echo Cleaning up...
-rm ${SRC}
+#rm ${SRC}
 
 echo Done.
