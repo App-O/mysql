@@ -7,7 +7,7 @@ DATESTAMP=$(date +"%Y-%m-%d-%H-%M")
 BACKUP_NAME=mysql-backup-${DATESTAMP}.sql.gz
 
 SRC=${LOCATION}/${BACKUP_NAME}
-DST=gs://app-o/mysql/backups/${BACKUP_NAME}
+DST=gs://mysql.app-o.se/backups/${BACKUP_NAME}
 
 exec >> ${LOCATION}/../logs/${DATESTAMP}.log
 exec 2>&1
