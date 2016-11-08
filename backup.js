@@ -51,7 +51,7 @@ var App = function() {
 		var commands = [];
 		commands.push(sprintf('mysqldump --triggers --routines --quick --user root -ppotatismos %s | gzip > %s', database, backupFile));
 		commands.push(sprintf('gsutil cp %s %s/%s', backupFile, bucket, backupName));
-		commands.push(sprintf('rm %s', backupFile));
+		//commands.push(sprintf('rm %s', backupFile));
 
 		var promise = Promise.resolve();
 
