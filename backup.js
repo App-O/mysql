@@ -1,8 +1,7 @@
 #!/usr/bin/env node
 
 var sprintf = require('yow').sprintf;
-
-
+var mkpath = require('yow').mkpath;
 
 var App = function() {
 
@@ -13,6 +12,8 @@ var App = function() {
 
 			console.log('$', cmd);
 
+			resolve();
+			/*
 			cp.exec(cmd, function(error, stdout, stderr) {
 
 				if (stdout)
@@ -26,34 +27,48 @@ var App = function() {
 				else
 					reject(error);
 
-			});
+			});*/
 
 		});
 
 	};
 
 	function run() {
+
 		var now = new Date();
+
 		var datestamp = sprintf('%04d-%02d-%02d-%02d-%02d', now.getFullYear(), now.getMonth(), now.getDate(), now.getHours(), now.getMinutes());
-		var backupFile = sprintf('mysql-backup-%s.sql.gz', datestamp);
-		console.log(backupFile);
+		var tmpPath = sprintf('%s/%s', __dirname, 'backups');
+		var backupName = sprintf('mysql-backup-%s.sql.gz', datestamp);
+		var backupFile = sprintf('%s/mysql-backup-%s.sql.gz', tmpPath, datestamp);
+		var database = 'strecket';
+		var bucket = 'gs://mysql.app-o.se/backups';
 
-		//var backupCommand = sprintf('mysqldump --triggers --routines --quick --user root -ppotatismos strecked | gzip > %s', backupFile);
-		var backupCommand = sprintf('mysqldump --triggers --routines --quick --user root -ppotatismos strecket > %s', backupFile);
+		mkpath(tmpPath);
 
-		exec(backupCommand).then(function() {
-			
+		var commands = [];
+		commands.push(sprintf('mysqldump --triggers --routines --quick --user root -ppotatismos %s > %s', database, backupFile));
+		commands.push(sprintf('gsutil cp %s %s/%s', backupFile, bucket, backupName));
+		commands.push(sprintf('rm %s', backupFile));
+
+		var promise = Promise.resolve();
+
+		commands.forEach(function(cmd) {
+			promise = promise.then(function() {
+				return exec(cmd);
+			});
+		});
+
+		promise.then(function() {
+			console.log('Finished.');
 		})
 		.catch(function(error) {
+			console.log(error);
 
 		});
 
 	}
 	run();
-	//mysqldump --triggers --routines --quick --user root -ppotatismos munch | gzip > ${SRC}
-
-
-//	mysqldump --triggers --routines --quick --user root -ppotatismos munch | gzip > ${SRC}
 
 };
 
