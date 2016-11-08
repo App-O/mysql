@@ -102,7 +102,7 @@ var App = function() {
 	function schedule() {
 		var running = false;
 
-		Schedule.scheduleJob('10 12 * * *', function() {
+		Schedule.scheduleJob('15 23 * * *', function() {
 
 			if (running) {
 				console.log('Upps! Running already!!');
