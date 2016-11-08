@@ -44,14 +44,14 @@ var App = function() {
 
 		var tmpPath    = sprintf('%s/%s', __dirname, 'backups');
 		var backupName = sprintf('backup-%s-%s.sql.gz', database, datestamp);
-		var backupFile = sprintf('%s/mysql-backup-%s.sql.gz', tmpPath, datestamp);
+		var backupFile = sprintf('%s/%s', tmpPath, backupName);
 
 		mkpath(tmpPath);
 
 		var commands = [];
+		commands.push(sprintf('rm %s/*.gz', tmpPath));
 		commands.push(sprintf('mysqldump --triggers --routines --quick --user root -ppotatismos %s | gzip > %s', database, backupFile));
 		commands.push(sprintf('gsutil cp %s %s/%s', backupFile, bucket, backupName));
-		//commands.push(sprintf('rm %s', backupFile));
 
 		var promise = Promise.resolve();
 
