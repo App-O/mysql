@@ -16,14 +16,13 @@ var App = function() {
 		args.option('-d --database <name>', 'specifies database database');
 		args.option('-s --schedule <format>', 'schedule backup (crontab syntax)');
 		args.option('-q --quiet', 'do not display commands executed', false);
-		args.option('-p --password', 'password for mysql', false);
+		args.option('-p --password <password>', 'password for mysql');
 		args.option('-y --dry', 'dry run', false);
 
 		args.parse(process.argv);
 
 		if (!args.database)
 			throw new Error('Must specify a database.');
-
 
 		if (!args.password)
 			throw new Error('Must specify a password.');
