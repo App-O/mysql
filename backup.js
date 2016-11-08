@@ -19,7 +19,7 @@ var App = function() {
 
 		args.parse(process.argv);
 
-		if (!_args.database)
+		if (!args.database)
 			throw new Error('Must specify a database.');
 
 
