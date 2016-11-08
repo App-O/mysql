@@ -74,7 +74,7 @@ var App = function() {
 		var datestamp  = sprintf('%04d-%02d-%02d-%02d-%02d', now.getFullYear(), now.getMonth(), now.getDate(), now.getHours(), now.getMinutes());
 
 		var tmpPath    = sprintf('%s/%s', __dirname, 'backups');
-		var backupName = sprintf('backup-%s-%s.sql.gz', _args.database, datestamp);
+		var backupName = sprintf('%s-%s.sql.gz', _args.database, datestamp);
 		var backupFile = sprintf('%s/%s', tmpPath, backupName);
 
 		mkpath(tmpPath);
