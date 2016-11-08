@@ -17,3 +17,5 @@
 
 	$ sudo forever-service delete backup-munch
 	$ sudo forever-service install backup-munch --script backup.js  --scriptOptions " --schedule '45 20 * * *' --database munch --password potatismos"
+
+	$ forever-service install backup-strecket  --script backup.js --scriptOptions " --schedule '25 21 * * *' --database strecket --password potatismos" --start

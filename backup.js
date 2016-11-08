@@ -1,9 +1,10 @@
 #!/usr/bin/env node
 
-var Schedule  = require('node-schedule');
-var sprintf   = require('yow').sprintf;
-var isString  = require('yow').isString;
-var mkpath    = require('yow').mkpath;
+var Schedule   = require('node-schedule');
+var sprintf    = require('yow').sprintf;
+var isString   = require('yow').isString;
+var mkpath     = require('yow').mkpath;
+var prefixLogs = require('yow').prefixLogs;
 
 var App = function() {
 
@@ -140,6 +141,8 @@ var App = function() {
 
 
 		try {
+			prefixLogs();
+			
 			_args = parseArgs();
 
 			if (_args.schedule)
