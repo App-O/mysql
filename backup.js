@@ -1,7 +1,8 @@
 #!/usr/bin/env node
 
-var sprintf = require('yow').sprintf;
-var mkpath = require('yow').mkpath;
+var Schedule = require('node-schedule');
+var sprintf  = require('yow').sprintf;
+var mkpath   = require('yow').mkpath;
 
 var App = function() {
 
@@ -13,7 +14,7 @@ var App = function() {
 			console.log('$', cmd);
 
 			resolve();
-			/*
+
 			cp.exec(cmd, function(error, stdout, stderr) {
 
 				if (stdout)
@@ -27,7 +28,7 @@ var App = function() {
 				else
 					reject(error);
 
-			});*/
+			});
 
 		});
 
