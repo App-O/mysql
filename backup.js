@@ -6,6 +6,8 @@ var mkpath   = require('yow').mkpath;
 
 var App = function() {
 
+	var _args = {};
+
 	function parseArgs() {
 		var args = require('commander');
 
