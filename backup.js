@@ -49,7 +49,7 @@ var App = function() {
 		mkpath(tmpPath);
 
 		var commands = [];
-		commands.push(sprintf('mysqldump --triggers --routines --quick --user root -ppotatismos %s > %s', database, backupFile));
+		commands.push(sprintf('mysqldump --triggers --routines --quick --user root -ppotatismos %s | gzip > %s', database, backupFile));
 		commands.push(sprintf('gsutil cp %s %s/%s', backupFile, bucket, backupName));
 		commands.push(sprintf('rm %s', backupFile));
 
