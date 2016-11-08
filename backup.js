@@ -34,7 +34,7 @@ var App = function() {
 
 	};
 
-	function run() {
+	function runOnce() {
 
 		var now = new Date();
 
@@ -55,6 +55,8 @@ var App = function() {
 
 		var promise = Promise.resolve();
 
+		console.log('Running backup...');
+
 		commands.forEach(function(cmd) {
 			promise = promise.then(function() {
 				return exec(cmd);
@@ -70,6 +72,26 @@ var App = function() {
 		});
 
 	}
+
+
+	function run() {
+
+		var running = false;
+
+		Schedule.scheduleJob('15 23 * * *', function() {
+
+			if (running) {
+				console.log('Upps! Running already!!');
+			}
+			else {
+				running = true;
+				runOnce();
+				running = false;
+			}
+		});
+	}
+
+
 	run();
 
 };
