@@ -38,12 +38,13 @@ var App = function() {
 
 		var now = new Date();
 
-		var datestamp = sprintf('%04d-%02d-%02d-%02d-%02d', now.getFullYear(), now.getMonth(), now.getDate(), now.getHours(), now.getMinutes());
-		var tmpPath = sprintf('%s/%s', __dirname, 'backups');
-		var backupName = sprintf('mysql-backup-%s.sql.gz', datestamp);
+		var database   = 'strecket';
+		var bucket     = 'gs://mysql.app-o.se/backups';
+		var datestamp  = sprintf('%04d-%02d-%02d-%02d-%02d', now.getFullYear(), now.getMonth(), now.getDate(), now.getHours(), now.getMinutes());
+
+		var tmpPath    = sprintf('%s/%s', __dirname, 'backups');
+		var backupName = sprintf('backup-%s-%s.sql.gz', database, datestamp);
 		var backupFile = sprintf('%s/mysql-backup-%s.sql.gz', tmpPath, datestamp);
-		var database = 'strecket';
-		var bucket = 'gs://mysql.app-o.se/backups';
 
 		mkpath(tmpPath);
 
