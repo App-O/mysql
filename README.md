@@ -6,7 +6,7 @@
 
 ## Install with **forever-service**
 
-	$ sudo forever-service install back --script backup.js
+	$ sudo forever-service install backup --script backup.js
 
 ## Controlling the service
 
