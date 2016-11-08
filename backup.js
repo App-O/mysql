@@ -1,8 +1,9 @@
 #!/usr/bin/env node
 
-var Schedule = require('node-schedule');
-var sprintf  = require('yow').sprintf;
-var mkpath   = require('yow').mkpath;
+var Schedule  = require('node-schedule');
+var sprintf   = require('yow').sprintf;
+var isString  = require('yow').isString;
+var mkpath    = require('yow').mkpath;
 
 var App = function() {
 
@@ -12,8 +13,8 @@ var App = function() {
 		var args = require('commander');
 
 		args.version('1.0.0');
-		args.option('-d --database [database]', 'specifies database database');
-		args.option('-s --schedule', 'schedule backup', false);
+		args.option('-d --database <name>', 'specifies database database');
+		args.option('-s --schedule <format>', 'schedule backup (crontab syntax)');
 		args.option('-q --quiet', 'do not display commands executed', false);
 		args.option('-y --dry', 'dry run', false);
 
@@ -102,7 +103,12 @@ var App = function() {
 	function schedule() {
 		var running = false;
 
-		Schedule.scheduleJob('15 23 * * *', function() {
+		if (!isString(_args.schedule))
+			throw new Error('Must specify scheduling.');
+
+		console.log(sprintf('Scheduling backup to run at "%s"...', _args.schedule));
+
+		Schedule.scheduleJob(_args.schedule, function() {
 
 			if (running) {
 				console.log('Upps! Running already!!');
