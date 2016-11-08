@@ -17,15 +17,21 @@ var App = function() {
 		args.option('-s --schedule <format>', 'schedule backup (crontab syntax)');
 		args.option('-q --quiet', 'do not display commands executed', false);
 		args.option('-p --password <password>', 'password for mysql');
+		args.option('-u --user <name>', 'MySQL user name (root)', 'root');
+		args.option('-b --bucket <name>', 'upload to Google bucket (mysql.app-o.se/backups)', 'mysql.app-o.se/backups');
+
 		args.option('-y --dry', 'dry run', false);
 
 		args.parse(process.argv);
 
-		if (!args.database)
+		if (!isString(args.database))
 			throw new Error('Must specify a database.');
 
-		if (!args.password)
+		if (!isString(args.password))
 			throw new Error('Must specify a password.');
+
+		if (!isString(args.bucket))
+			throw new Error('Bucket not specified');
 
 		return args;
 
@@ -68,10 +74,13 @@ var App = function() {
 
 		var now = new Date();
 
+
 		var database   = _args.database;
 		var password   = _args.password;
+		var bucket     = _args.bucket;
+		var user       = _args.user;
 
-		var bucket     = 'gs://mysql.app-o.se/backups';
+
 		var datestamp  = sprintf('%04d-%02d-%02d-%02d-%02d', now.getFullYear(), now.getMonth(), now.getDate(), now.getHours(), now.getMinutes());
 
 		var tmpPath    = sprintf('%s/%s', __dirname, 'backups');
@@ -82,8 +91,8 @@ var App = function() {
 
 		var commands = [];
 		commands.push(sprintf('rm %s/*.gz', tmpPath));
-		commands.push(sprintf('mysqldump --triggers --routines --quick --user root -p%s %s | gzip > %s', password, database, backupFile));
-		commands.push(sprintf('gsutil cp %s %s/%s', backupFile, bucket, backupName));
+		commands.push(sprintf('mysqldump --triggers --routines --quick --user %s -p%s %s | gzip > %s', user, password, database, backupFile));
+		commands.push(sprintf('gsutil cp %s gs://%s/%s', backupFile, bucket, backupName));
 
 		var promise = Promise.resolve();
 
