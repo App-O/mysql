@@ -6,7 +6,8 @@
 
 ## Install with **forever-service**
 
-	$ sudo forever-service install backup --script backup.js --scriptOptions " --schedule --database xxx"
+	$ sudo forever-service install backup --script backup.js --scriptOptions " --schedule '15 23 * * *' --database xxx --password xxx"
+
 
 ## Controlling the service
 
