@@ -70,6 +70,7 @@ var App = function() {
 
 		var database   = _args.database;
 		var password   = _args.password;
+
 		var bucket     = 'gs://mysql.app-o.se/backups';
 		var datestamp  = sprintf('%04d-%02d-%02d-%02d-%02d', now.getFullYear(), now.getMonth(), now.getDate(), now.getHours(), now.getMinutes());
 
