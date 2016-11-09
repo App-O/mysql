@@ -14,14 +14,14 @@ var App = function(argv) {
 		var args = require('yargs');
 
 		args.usage('Usage: $0 [options]');
-		args.option('h', {alias:'help', describe:'Displays this information'});
+		args.option('h', {alias:'help',     describe:'Displays this information'});
 		args.option('d', {alias:'database', describe:'Specifies mysql database', required:true});
-		args.option('b', {alias:'bucket', describe:'Upload backup to Google bucket', default:'gs://mysql.app-o.se/backups'});
+		args.option('b', {alias:'bucket',   describe:'Upload backup to Google bucket', default:'gs://mysql.app-o.se/backups'});
 		args.option('s', {alias:'schedule', describe:'Schedule backup, crontab syntax'});
 		args.option('p', {alias:'password', describe:'Password for mysql', required:true});
-		args.option('V', {alias:'verbose', describe:'Display commands executed', default:true});
-		args.option('u', {alias:'user', describe:'mysql user name', default:'root'});
-		args.option('n', {alias:'dry-run', describe:'Don\'t actually run any commands', default:false});
+		args.option('V', {alias:'verbose',  describe:'Display commands executed', default:true});
+		args.option('u', {alias:'user',     describe:'Mysql user name', default:'root'});
+		args.option('n', {alias:'dry-run',  describe:'Don\'t actually run any commands', default:false});
 
 		args.wrap(null);
 
