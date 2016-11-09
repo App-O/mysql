@@ -4,8 +4,8 @@
   "description": "",
   "main": "backup.js",
   "dependencies": {
-    "commander": "^2.9.0",
     "node-schedule": "^1.2.0",
+    "yargs": "^6.3.0",
     "yow": "^1.0.26"
   },
   "devDependencies": {},

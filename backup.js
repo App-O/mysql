@@ -1,41 +1,36 @@
 #!/usr/bin/env node
 
-var Schedule   = require('node-schedule');
 var sprintf    = require('yow').sprintf;
 var isString   = require('yow').isString;
 var mkpath     = require('yow').mkpath;
 var prefixLogs = require('yow').prefixLogs;
 
-var App = function() {
+var App = function(argv) {
 
-	var _args = {};
+	var argv = parseArgs();
 
 	function parseArgs() {
-		var args = require('commander');
 
-		args.version('1.0.0');
-		args.option('-d --database <name>', 'specifies database database');
-		args.option('-s --schedule <format>', 'schedule backup (crontab syntax)');
-		args.option('-q --quiet', 'do not display commands executed', false);
-		args.option('-p --password <password>', 'password for mysql');
-		args.option('-u --user <name>', 'MySQL user name (root)', 'root');
-		args.option('-b --bucket <name>', 'upload to Google bucket (mysql.app-o.se/backups)', 'mysql.app-o.se/backups');
+		var args = require('yargs');
 
-		args.option('-y --dry', 'dry run', false);
+		args.usage('Usage: $0 [options]');
+		args.option('h', {alias:'help', describe:'Displays this information'});
+		args.option('d', {alias:'database', describe:'Specifies mysql database', required:true});
+		args.option('b', {alias:'bucket', describe:'Upload backup to Google bucket', default:'gs://mysql.app-o.se/backups'});
+		args.option('s', {alias:'schedule', describe:'Schedule backup, crontab syntax'});
+		args.option('p', {alias:'password', describe:'Password for mysql', required:true});
+		args.option('V', {alias:'verbose', describe:'Display commands executed', default:true});
+		args.option('u', {alias:'user', describe:'mysql user name', default:'root'});
+		args.option('n', {alias:'dry-run', describe:'Don\'t actually run any commands', default:false});
 
-		args.parse(process.argv);
+		args.wrap(null);
 
-		if (!isString(args.database))
-			throw new Error('Must specify a database.');
+		args.check(function(argv) {
 
-		if (!isString(args.password))
-			throw new Error('Must specify a password.');
+			return true;
+		});
 
-		if (!isString(args.bucket))
-			throw new Error('Bucket not specified');
-
-		return args;
-
+		return args.argv;
 	}
 
 	function exec(cmd) {
@@ -43,10 +38,10 @@ var App = function() {
 		return new Promise(function(resolve, reject) {
 			var cp = require('child_process');
 
-			if (!_args.quiet)
+			if (argv.verbose)
 				console.log('$', cmd);
 
-			if (_args.dry) {
+			if (argv.dryRun) {
 				resolve();
 			}
 			else {
@@ -54,9 +49,6 @@ var App = function() {
 
 					if (stdout)
 						console.log(stdout);
-
-					//if (stderr)
-					//	console.error(stderr);
 
 					if (!error)
 						resolve();
@@ -76,10 +68,10 @@ var App = function() {
 		var now = new Date();
 
 
-		var database   = _args.database;
-		var password   = _args.password;
-		var bucket     = _args.bucket;
-		var user       = _args.user;
+		var database   = argv.database;
+		var password   = argv.password;
+		var bucket     = argv.bucket;
+		var user       = argv.user;
 
 
 		var datestamp  = sprintf('%04d-%02d-%02d-%02d-%02d', now.getFullYear(), now.getMonth(), now.getDate(), now.getHours(), now.getMinutes());
@@ -91,9 +83,9 @@ var App = function() {
 		mkpath(tmpPath);
 
 		var commands = [];
-		commands.push(sprintf('rm %s/*.gz', tmpPath));
+		commands.push(sprintf('rm -f %s/*.gz', tmpPath));
 		commands.push(sprintf('mysqldump --triggers --routines --quick --user %s -p%s %s | gzip > %s', user, password, database, backupFile));
-		commands.push(sprintf('gsutil cp %s gs://%s/%s', backupFile, bucket, backupName));
+		commands.push(sprintf('gsutil cp %s %s/%s', backupFile, bucket, backupName));
 
 		var promise = Promise.resolve();
 
@@ -116,14 +108,13 @@ var App = function() {
 	}
 
 	function schedule() {
+
+		var Schedule = require('node-schedule');
 		var running = false;
 
-		if (!isString(_args.schedule))
-			throw new Error('Must specify scheduling.');
+		console.log(sprintf('Scheduling backup to run at "%s"...', argv.schedule));
 
-		console.log(sprintf('Scheduling backup to run at "%s"...', _args.schedule));
-
-		Schedule.scheduleJob(_args.schedule, function() {
+		Schedule.scheduleJob(argv.schedule, function() {
 
 			if (running) {
 				console.log('Upps! Running already!!');
@@ -142,10 +133,8 @@ var App = function() {
 
 		try {
 			prefixLogs();
-			
-			_args = parseArgs();
 
-			if (_args.schedule)
+			if (argv.schedule)
 				schedule();
 			else
 				runOnce();

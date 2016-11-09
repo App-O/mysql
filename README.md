@@ -15,7 +15,10 @@
 	$ sudo service backup stop
 	$ sudo service backup start
 
-	$ sudo forever-service delete backup-munch
-	$ sudo forever-service install backup-munch --script backup.js  --scriptOptions " --schedule '45 20 * * *' --database munch --password potatismos"
+#### Backing some databases
 
-	$ forever-service install backup-strecket  --script backup.js --scriptOptions " --schedule '25 21 * * *' --database strecket --password potatismos" --start
+	$ sudo forever-service delete backup-munch
+	$ sudo forever-service install backup-munch --script backup.js  --scriptOptions " --schedule '00 22 * * *' --database munch --password potatismos" --start
+
+	$ sudo forever-service delete backup-strecket
+	$ sudo forever-service install backup-strecket --script backup.js --scriptOptions " --schedule '00 22 * * *' --database strecket --password potatismos" --start
